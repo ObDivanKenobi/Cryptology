@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\Cryptology.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,7 +43,41 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Calculations.cs" />
+    <Compile Include="Cryptosystems\DiffiHellman.cs" />
+    <Compile Include="Cryptosystems\ElGamal.cs" />
+    <Compile Include="Cryptosystems\ElGamalDigitalSignature.cs" />
+    <Compile Include="Cryptosystems\MerkleHellman.cs" />
+    <Compile Include="Cryptosystems\NoKeyTransmission.cs" />
+    <Compile Include="Delegates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Cryptosystems\RSA.cs" />
+    <Compile Include="Cryptosystems\Schnorr.cs" />
+    <Compile Include="Resources\HelpFiles.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HelpFiles.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShnorrHelp.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NoKeyTransmissionHelp.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\HelpFiles.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>HelpFiles.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ElGamalDigitalSignature.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ElGamal.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\MerkleHellmanHelp.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

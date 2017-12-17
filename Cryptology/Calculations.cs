@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -61,6 +62,8 @@ namespace Cryptology
             return -1;
         }
 
+
+        
         /// <summary>
         /// Решение сравнения x^<paramref name="a"/> = <paramref name="b"/> (mod <paramref name="m"/>) (перебор значений x^<paramref name="a"/>).
         /// </summary>
@@ -73,6 +76,26 @@ namespace Cryptology
             BigInteger xa = BigInteger.Pow(x, a);
 
             while ( xa % m != b)
+            {
+                ++x;
+                xa = BigInteger.Pow(x, a);
+            }
+
+            return x;
+        }
+
+        /// <summary>
+        /// Решение сравнения x^<paramref name="a"/> = <paramref name="b"/> (mod <paramref name="m"/>) (перебор значений x^<paramref name="a"/>) с ограничением на значение x.
+        /// </summary>
+        public static int PowerComparisonBruteforce(int a, int b, int m, Func<int, bool> restriction)
+        {
+            if (b == 0)
+                return m;
+
+            int x = 1;
+            BigInteger xa = BigInteger.Pow(x, a);
+
+            while (xa % m != b | !restriction(x))
             {
                 ++x;
                 xa = BigInteger.Pow(x, a);
@@ -198,5 +221,94 @@ namespace Cryptology
 
             return result;
         }
+
+        public static bool SchnorrCheck(int g, int s, int y, int e, int p, int r)
+        {
+            BigInteger gs = BigInteger.Pow(g, s),
+                       ye = BigInteger.Pow(y, e);
+
+            BigInteger result = (gs * ye);
+            return result % p == r % p;
+        }
+
+        //сломать Шнорра
+        //my-files.ru
+        //public static int AttackSchnorr(int p, int q, int y)
+        //{
+        //    if ((p - 1) % q != 0)
+        //        throw new ArgumentException($"p-1 % q must be 0 instead of {p - 1 % q}");
+
+        //    //g^q = 1 mod p
+        //    int g = PowerComparisonBruteforce(q, 1, p, x => x != 1);
+        //    Debug.WriteLine($"pwgcmp({q}, {1}, {p}) = {g}");
+
+        //    int k = 1;
+        //    BigInteger gky = g*y;
+        //    //y = g^-k mod p => y*g^k = 1 mod p
+        //    BigInteger mod = gky % p;
+        //    while (mod != 1)
+        //    {
+        //        Debug.WriteLine($"k = {k}, g^k*y = {gky}, g^k*y % p = {mod} ");
+        //        gky *= g;
+        //        ++k;
+        //    }
+
+        //    return k;
+        //}
+
+        public static int AttackSchnorr(int p, int g, int y)
+        {
+            int k = 1;
+            BigInteger gky = g * y;
+            //y = g^-k mod p => y*g^k = 1 mod p
+            while (gky % p != 1)
+            {
+                Debug.WriteLine($"k = {k}, g^k*y % p = {gky % p} ");
+                gky *= g;
+                ++k;
+            }
+
+            return k;
+        }
+
+        /// <summary>
+        /// Возведение <paramref name="a"/> в степень <paramref name="b"/>
+        /// по модулю <paramref name="m"/>.
+        /// </summary>
+        /// <returns><paramref name="a"/>^<paramref name="b"/> mod <paramref name="m"/></returns>
+        public static int ModPow(int a, int b, int m)
+        {
+            return (int)BigInteger.ModPow(a, b, m);
+        }
+
+        /// <summary>
+        /// Нахождение обратного элемента к <paramref name="a"/> в кольце по модулю <paramref name="m"/>.
+        /// <paramref name="a"/> и <paramref name="m"/> взаимно просты.
+        /// </summary>
+        public static int Invert(int a, int m)
+        {
+            return (int)BigInteger.ModPow(a, m - 2, m);
+        }
+
+        /// <summary>
+        /// Нахождение обратного элемента к <paramref name="a"/> в кольце по модулю <paramref name="m"/>.
+        /// <paramref name="a"/> и <paramref name="m"/> не являются взаимно простыми.
+        /// </summary>
+        public static int InvertNotCoprimeIntegers(int a, int m)
+        {
+            int pow = EulersTotientFunction(m) - 1;
+            return (int)BigInteger.ModPow(a, pow, m);
+        }
+
+        /// <summary>
+        /// Умножение <paramref name="a"/> на <paramref name="b"/> по модулю <paramref name="m"/>
+        /// </summary>
+        public static int ModMultiply(int a, int b, int m)
+        {
+            BigInteger mult = BigInteger.Multiply(a, b) % m;
+
+            return (int)mult;
+        }
+
     }
 }

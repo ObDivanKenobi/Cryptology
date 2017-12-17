@@ -149,7 +149,7 @@ namespace Cryptology.Tests
             //debug
             //bool isOk = true;
 
-            foreach(var e in input)
+            foreach (var e in input)
             {
                 StringBuilder output = new StringBuilder($"{e.module}:");
                 var foundElements = Calculations.FindPrimitiveElements(e.module);
@@ -165,6 +165,82 @@ namespace Cryptology.Tests
                 Assert.IsTrue(isCurrentOk);
                 Debug.WriteLine(output.ToString());
             }
+        }
+
+        [TestMethod()]
+        public void SchnorrCheckTest()
+        {
+            int r = 32607,
+                g = 2902,
+                y = 9107,
+                p = 33107;
+
+            (int e, int s)[] input = new[] { (15776, 9856), (490, 8108), (9987, 7309), (155, 1267) };
+
+            for (int i = 0; i < input.Length; ++i)
+            {
+                Trace.WriteLine($"e = {input[i].e}, s = {input[i].s}, result = {Calculations.SchnorrCheck(g, input[i].s, y, input[i].e, p, r)}");
+            }
+        }
+
+        [TestMethod()]
+        public void AttackSchnorrTest()
+        {
+            (int p, int q, int g, int y, int key)[] input = new[]
+            {
+                (p: 48731, q: 443, g: 11444, y: 7355, key: 357)
+            };
+
+            foreach (var e in input)
+            {
+                int calculatedKey = Calculations.AttackSchnorr(e.p, e.g, e.y);
+                if (calculatedKey != e.key)
+                {
+                    Debug.WriteLine($"failed at (p: {e.p}, g: {e.g}, y: {e.y}, key: {e.key}) with calculated key {calculatedKey}.");
+                    Assert.IsFalse(true);
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void computeSchnorr()
+        {
+            Debug.WriteLine(Calculations.AttackSchnorr(33107, 2902, 9107));
+        }
+
+        [TestMethod()]
+        public void InvertTest()
+        {
+            (int x, int mod)[] input = { (50973, 54751), (29, 80), (71, 120) };
+            bool isOk = true;
+
+            foreach(var pair in input)
+            {
+                isOk = ((ulong)Calculations.InvertNotCoprimeIntegers(pair.x, pair.mod) * (ulong)pair.x) % (ulong)pair.mod == 1;
+                if (!isOk)
+                {
+                    Debug.WriteLine($"Failed at x={pair.x}; mod={pair.mod};");
+                    break;
+                }
+            }
+
+            Assert.IsTrue(isOk);
+            
+        }
+
+        [TestMethod()]
+        public void Speedtest()
+        {
+            int random = new Random(10000).Next();
+            Debug.WriteLine(Calculations.EulersTotientFunction(random));
+        }
+
+        [TestMethod()]
+        public void JustTest()
+        {
+            char a = 'А',
+                 b = 'а';
+            Debug.WriteLine($"{a} > {b}: {a > b}");
         }
     }
 }
