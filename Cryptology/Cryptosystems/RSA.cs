@@ -57,5 +57,15 @@ namespace Cryptology
         {
             return Calculations.ModPow(m1, d, r);
         }
+
+        /// <summary>
+        /// Вычислить секретный ключ по открытому
+        /// </summary>
+        /// <param name="d">открытая экспонента (a или b)</param>
+        /// <param name="r">модуль (r_a или r_b)</param>
+        public static int CalculateSecretKey(int d, int r)
+        {
+            return Calculations.InvertNotCoprimeIntegers(d, r);
+        }
     }
 }

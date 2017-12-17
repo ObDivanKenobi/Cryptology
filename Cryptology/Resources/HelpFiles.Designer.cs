@@ -61,6 +61,25 @@ namespace Cryptology.Resources {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на         1) Берутся m, q - простые числа
+        ///           q - примитивный элемент в Zm
+        ///        2) А берёт alpha и вычисляет x = q^alpha mod m
+        ///        3) B берёт beta и вычисляет y = q^beta mod m
+        ///        Открытый ключ: (m, q, x, y)
+        ///        4) A вычисляет число k1 = y^alpha mod m
+        ///           B -//- k2 = x^beta mod m
+        ///           При этом k1 = k2 = k
+        ///        k - общий секретный ключ
+        ///        
+        ///        Взлом: решить уравнение q^alpha mod m или q^beta mod m.
+        /// </summary>
+        internal static string DiffiHellmanHelp {
+            get {
+                return ResourceManager.GetString("DiffiHellmanHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Параметры:
         ///p - случайное простое число
         ///g - примитивный элемент в Zp
@@ -141,6 +160,28 @@ namespace Cryptology.Resources {
         internal static string NoKeyTransmissionHelp {
             get {
                 return ResourceManager.GetString("NoKeyTransmissionHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на                 А                          B
+        ///    I. 1) Выбор простых чисел (достаточно больших)
+        ///              p1, p2                     q1, q2
+        ///       2) Вычислить
+        ///             r_a = p1*p2               r_b = q1*q2
+        ///       phi(r_a) = (p1-1)(p2-1)    phi(r_b) = (q1-1)(q2-1)
+        ///     
+        ///    II. 4) Выбирается
+        ///               a                           b 
+        ///          1 &lt; a &lt; phi(r_a)           1 &lt; b &lt; phi(r_b)
+        ///        gcd(a, phi(r_a)) = 1       gcd(b, phi(r_b)) = 1
+        ///
+        ///        5) Открытый ключ
+        ///            (r_a [остаток строки не уместился]&quot;;.
+        /// </summary>
+        internal static string RSA_Help {
+            get {
+                return ResourceManager.GetString("RSA_Help", resourceCulture);
             }
         }
         

@@ -26,5 +26,18 @@ namespace Cryptology
         {
             return Calculations.ModPow(value, exponent, mod);
         }
+
+        public static int CalculateSecretKey(int m, int q, int x, int y)
+        {
+            int alpha = 1,
+                powQ = q;
+            while (q % m != x)
+            {
+                ++alpha;
+                powQ *= q;
+            }
+
+            return Calculations.ModPow(y, alpha, m);
+        }
     }
 }

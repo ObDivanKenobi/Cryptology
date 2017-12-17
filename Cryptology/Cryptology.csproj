@@ -59,6 +59,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\IMG_20171211_013409_20_files_merged.pdf" />
     <None Include="Resources\ShnorrHelp.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +79,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\MerkleHellmanHelp.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\RSA_Help.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DiffiHellmanHelp.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
