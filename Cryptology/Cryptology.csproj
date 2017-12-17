@@ -59,7 +59,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\IMG_20171211_013409_20_files_merged.pdf" />
     <None Include="Resources\ShnorrHelp.txt" />
   </ItemGroup>
   <ItemGroup>
