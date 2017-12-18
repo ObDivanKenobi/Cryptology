@@ -29,11 +29,11 @@ namespace Cryptology
         
         II. Шифрование
         a - n-битное сообщение, a_i in {0,1};
-        шифротекст c = Sum(a_i*b_i)
+        шифротекст: x = Sum(a_i*b_i)
 
         III. Расшифровка
         s = r^-1 mod q
-        c = сообщение*s
+        c = x*s mod q
         Выбрать наибольший элемент w1 из w, который меньше, чем c, и вычислить
         c1 = c - w1. Далее выбирает следующий наибольший элемент, 
         w2? который меньше, чем c1, повторять, пока разность не станет равной 
@@ -76,7 +76,7 @@ namespace Cryptology
         }
 
         /// <summary>
-        /// Дешифровать сообщение <paramref name="w"/>.
+        /// Дешифровать сообщение <paramref name="x"/>.
         /// </summary>
         /// <param name="x">сообщение</param>
         /// <param name="w">последовательность - часть закрытого ключа</param>
@@ -104,7 +104,6 @@ namespace Cryptology
         {
             byte[] bits = new byte[w.Length];
             int c = Calculations.ModMultiply(x, s, q);
-            //int c = x * s;
             while (c > 0)
             {
                 int i = w.Length - 1;
@@ -116,7 +115,6 @@ namespace Cryptology
             }
 
             CharToBitsConverter converter = new CharToBitsConverter('А', 6);
-            //SixBitRussianChar ch = new SixBitRussianChar(bits);
             return converter.ToChar(bits);
         }
     }

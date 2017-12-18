@@ -151,21 +151,39 @@ namespace Cryptology.Cryptosystems
             return Decrypt(openKey, message, k, CalculateSecretKeyShanksMethod(openKey));
         }
 
+        /// <summary>
+        /// Вычислить секретный ключ по открытому.
+        /// </summary>
+        /// <remarks>Используется перебор.</remarks>
         public static int CalculateSecretKeyBruteforce(int p, int g, int y)
         {
             return Calculations.DiscreteLogarithmBruteforce(g, y, p);
         }
 
+        /// <summary>
+        /// Вычислить секретный ключ по открытому.
+        /// </summary>
+        /// <param name="openKey">открытый ключ</param>
+        /// <remarks>Используется перебор.</remarks>
         public static int CalculateSecretKeyBruteforce((int p, int g, int y) openKey)
         {
             return Calculations.DiscreteLogarithmBruteforce(openKey.g, openKey.y, openKey.p);
         }
 
+        /// <summary>
+        /// Вычислить секретный ключ по открытому.
+        /// </summary>
+        /// <remarks>Используется алгоритм Шэнкса.</remarks>
         public static int CalculateSecretKeyShanksMethod(int p, int g, int y)
         {
             return Calculations.DiscreteLogarithmShanksMethod(g, y, p);
         }
 
+        /// <summary>
+        /// Вычислить секретный ключ по открытому.
+        /// </summary>
+        /// <param name="openKey">открытый ключ</param>
+        /// <remarks>Используется алгоритм Шэнкса.</remarks>
         public static int CalculateSecretKeyShanksMethod((int p, int g, int y) openKey)
         {
             return Calculations.DiscreteLogarithmShanksMethod(openKey.g, openKey.y, openKey.p);

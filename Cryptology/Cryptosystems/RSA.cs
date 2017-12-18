@@ -71,7 +71,6 @@ namespace Cryptology
             return Calculations.Invert(d, r); //InvertNotCoprimeIntegers(d, r);
         }
 
-
         /// <summary>
         /// Атака на алгоритм RSA методом бесключевого чтения
         /// </summary>
