@@ -79,7 +79,7 @@ namespace Cryptology.Cryptosystems
         {
             //m2 = m1^b mod p
             int b = calc(m1, m2, p);
-            int beta = Calculations.Invert(b, Calculations.EulersTotientFunction(p));
+            int beta = Calculations.InvertNotCoprimeIntegers(b, Calculations.EulersTotientFunction(p));
             return Calculations.ModPow(m3, beta, p);
         }
 
@@ -92,7 +92,7 @@ namespace Cryptology.Cryptosystems
         /// <returns></returns>
         static int Decrypt(int p, int b, int m3)
         {
-            int beta = Calculations.Invert(b, Calculations.EulersTotientFunction(p));
+            int beta = Calculations.InvertNotCoprimeIntegers(b, Calculations.EulersTotientFunction(p));
             return Calculations.ModPow(m3, beta, p);
         }
     }

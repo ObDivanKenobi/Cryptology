@@ -26,5 +26,18 @@ namespace Cryptology.Tests
             Debug.WriteLine($"Expected: {expectedResult}\nActual: {message}");
             Assert.AreEqual(expectedResult, message);
         }
+
+        [TestMethod()]
+        public void NoKeyReadingAttackTest()
+        {
+            int ra = 212887,
+                a = 3061,
+                c = 35947,
+                expectedResult = 193263;
+
+            int result = RSA.NoKeyReadingAttack(a, ra, c);
+
+            Assert.AreEqual(expectedResult, result);
+        }
     }
 }

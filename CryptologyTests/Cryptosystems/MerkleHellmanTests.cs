@@ -14,37 +14,6 @@ namespace Cryptology.Tests
     public class MerkleHellmanTests
     {
         [TestMethod()]
-        public void TestSixBitChar()
-        {
-            SixBitRussianChar sbrc = new SixBitRussianChar('б');
-            Debug.Write("Bits: [");
-            foreach (var bit in sbrc.Bits)
-                Debug.Write($"{bit} ");
-            Debug.WriteLine("];");
-        }
-
-        [TestMethod()]
-        public void TestSixBitChar_Consistency()
-        {
-            SixBitRussianChar fromChar = new SixBitRussianChar('С');
-            byte[] bits = new byte[] { 0, 1, 1, 1, 1, 1 };
-            SixBitRussianChar fromBits = new SixBitRussianChar(bits.Reverse().ToArray());
-            bits = fromChar.Bits;
-            Debug.Write("Bits from char: [");
-            for(int i = 0; i < bits.Length; ++i)
-                Debug.Write($"{bits[i]} ");
-            Debug.WriteLine($"];\nChar: {fromChar.ToChar()}");
-
-            bits = fromBits.Bits;
-            Debug.Write("Bits from bits: [");
-            for (int i = 0; i < bits.Length; ++i)
-                Debug.Write($"{bits[i]} ");
-            Debug.WriteLine($"];\nChar: {fromBits.ToChar()}");
-
-            Assert.AreEqual(fromChar.ToChar(), fromBits.ToChar());
-        }
-
-        [TestMethod()]
         public void ToCharTest()
         {
             char ch = 'Ъ';
@@ -58,21 +27,25 @@ namespace Cryptology.Tests
         [TestMethod()]
         public void DecryptTest()
         {
-            //int[] w = { 2, 3, 7, 14, 29, 57 },
-            //      x = { 112, 199, 53, 70, 87 };
-            //int q = 120,
-            //    r = 71;
-            //string expectedResult = "СТЕНА";
+            (int[] w, int[] x, int q, int r, string expectedResult)[] input = 
+                {
+                    ( w: new int[] { 2, 3, 7, 14, 29, 57 }, x: new int[] { 112, 199, 53, 70, 87 }, q: 120, r: 71, "СТЕНА"),
+                    ( w: new int[] { 1, 2, 4, 9, 18, 35 }, x: new int[] { 42, 79, 78, 97, 154, 57 }, q: 80, r: 29, "БУЙВОЛ")
+                };
 
-            int[] w = { 1, 2, 4, 9, 18, 35 },
-                  x = { 42, 79, 78, 97, 154, 57 };
-            int q = 80,
-                r = 29;
+            bool isOk = true;
+            foreach(var e in input)
+            {
+                string result = MerkleHellman.Decrypt(e.x, e.w, e.q, e.r);
+                isOk = result == e.expectedResult;
+                if (!isOk)
+                {
+                    Debug.WriteLine($"Failed at: {e.expectedResult}");
+                    break;
+                }
+            }
 
-            string result = MerkleHellman.Decrypt(x, w, q, r);
-            Debug.WriteLine($"Расшифрованное сообщение: {result}");
-
-            //Assert.AreEqual(expectedResult, result);
+            Assert.IsTrue(isOk);
         }
 
         [TestMethod()]

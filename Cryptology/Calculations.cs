@@ -61,9 +61,7 @@ namespace Cryptology
             }
             return -1;
         }
-
-
-        
+       
         /// <summary>
         /// Решение сравнения x^<paramref name="a"/> = <paramref name="b"/> (mod <paramref name="m"/>) (перебор значений x^<paramref name="a"/>).
         /// </summary>
@@ -221,56 +219,7 @@ namespace Cryptology
 
             return result;
         }
-
-        public static bool SchnorrCheck(int g, int s, int y, int e, int p, int r)
-        {
-            BigInteger gs = BigInteger.Pow(g, s),
-                       ye = BigInteger.Pow(y, e);
-
-            BigInteger result = (gs * ye);
-            return result % p == r % p;
-        }
-
-        //сломать Шнорра
-        //my-files.ru
-        //public static int AttackSchnorr(int p, int q, int y)
-        //{
-        //    if ((p - 1) % q != 0)
-        //        throw new ArgumentException($"p-1 % q must be 0 instead of {p - 1 % q}");
-
-        //    //g^q = 1 mod p
-        //    int g = PowerComparisonBruteforce(q, 1, p, x => x != 1);
-        //    Debug.WriteLine($"pwgcmp({q}, {1}, {p}) = {g}");
-
-        //    int k = 1;
-        //    BigInteger gky = g*y;
-        //    //y = g^-k mod p => y*g^k = 1 mod p
-        //    BigInteger mod = gky % p;
-        //    while (mod != 1)
-        //    {
-        //        Debug.WriteLine($"k = {k}, g^k*y = {gky}, g^k*y % p = {mod} ");
-        //        gky *= g;
-        //        ++k;
-        //    }
-
-        //    return k;
-        //}
-
-        public static int AttackSchnorr(int p, int g, int y)
-        {
-            int k = 1;
-            BigInteger gky = g * y;
-            //y = g^-k mod p => y*g^k = 1 mod p
-            while (gky % p != 1)
-            {
-                Debug.WriteLine($"k = {k}, g^k*y % p = {gky % p} ");
-                gky *= g;
-                ++k;
-            }
-
-            return k;
-        }
-
+        
         /// <summary>
         /// Возведение <paramref name="a"/> в степень <paramref name="b"/>
         /// по модулю <paramref name="m"/>.
@@ -310,5 +259,60 @@ namespace Cryptology
             return (int)mult;
         }
 
+        /// <summary>
+        /// Перемножение <paramref name="multipliers"/> по модулю <paramref name="m"/>.
+        /// </summary>
+        /// <param name="m">модуль</param>
+        /// <param name="multipliers">множители</param>
+        /// <returns></returns>
+        public static int ModMultiply(int m, params int[] multipliers)
+        {
+            BigInteger mult = multipliers[0];
+            for(int i = 1; i < multipliers.Length; ++i)
+                mult *= multipliers[i];
+
+            mult = mult % m;
+            return (int)mult;
+        }
+
+        /// <summary>
+        /// Найти НОД <paramref name="a"/> и <paramref name="b"/>
+        /// </summary>
+        /// <remarks>Модификация для расширенного алгоритма Евклида.</remarks>
+        static int Gcd(int a, int b, out int x, out int y)
+        {
+            if (a == 0)
+            {
+                x = 0;
+                y = 1;
+                return b;
+            }
+
+            int d = Gcd(b % a, a, out int x1, out int y1);
+            x = y1 - (b / a) * x1;
+            y = x1;
+            return d;
+        }
+
+        /// <summary>
+        /// Попытка решения диофантова уравнения с двумя переменными.
+        /// </summary>
+        /// <param name="a">коэффициент</param>
+        /// <param name="b">коэффициент</param>
+        /// <param name="c">коэффициент</param>
+        /// <param name="x0">частное решение</param>
+        /// <param name="y0">частное решение</param>
+        /// <returns></returns>
+        public static bool DiophantineEquation(int a, int b, int c, out int x0, out int y0)
+        {
+            int g = Gcd(a, b, out x0, out y0);
+            if (c % g != 0)
+                return false;
+            x0 *= c / g;
+            y0 *= c / g;
+            if (a < 0) x0 *= -1;
+            if (b < 0) y0 *= -1;
+            return true;
+        }
     }
 }

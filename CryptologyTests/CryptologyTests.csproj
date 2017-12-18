@@ -57,7 +57,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CalculationsTests.cs" />
+    <Compile Include="Cryptosystems\ElGamalTests.cs" />
     <Compile Include="Cryptosystems\MerkleHellmanTests.cs" />
+    <Compile Include="Cryptosystems\NoKeyTransmissionTests.cs" />
     <Compile Include="Cryptosystems\RSATests.cs" />
     <Compile Include="Cryptosystems\SchnorrTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

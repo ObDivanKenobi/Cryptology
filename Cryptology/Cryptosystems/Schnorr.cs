@@ -34,7 +34,11 @@ namespace Cryptology
         /// </summary>
         public static bool Check(int g, int s, int y, int e, int p, int r)
         {
-            return Calculations.SchnorrCheck(g, s, y, e, p, r);
+            BigInteger gs = BigInteger.Pow(g, s),
+                       ye = BigInteger.Pow(y, e);
+
+            BigInteger result = (gs * ye);
+            return result % p == r % p;
         }
 
         /// <summary>
@@ -47,7 +51,15 @@ namespace Cryptology
         /// <returns>секретный ключ</returns>
         public static int Attack(int p, int g, int y)
         {
-            return Calculations.AttackSchnorr(p, g, y);
+            int k = 1;
+            BigInteger gky = g * y;
+            while (gky % p != 1)
+            {
+                gky *= g;
+                ++k;
+            }
+
+            return k;
         }
 
         /// <summary>

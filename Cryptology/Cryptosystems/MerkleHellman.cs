@@ -76,7 +76,7 @@ namespace Cryptology
         }
 
         /// <summary>
-        /// Расшифровать сообщение <paramref name="w"/>.
+        /// Дешифровать сообщение <paramref name="w"/>.
         /// </summary>
         /// <param name="x">сообщение</param>
         /// <param name="w">последовательность - часть закрытого ключа</param>
@@ -94,7 +94,7 @@ namespace Cryptology
         }
 
         /// <summary>
-        /// Расшифровать символ <paramref name="x"/>.
+        /// Десшифровать символ <paramref name="x"/>.
         /// </summary>
         /// <param name="x">зашифрованный символ</param>
         /// <param name="w">последовательность - часть закрытого ключа</param>
@@ -161,6 +161,9 @@ namespace Cryptology
         }
     }
 
+    /// <summary>
+    /// Преобразует символ в массив битов заданной длины (и наоборот). 
+    /// </summary>
     public class CharToBitsConverter
     {
         public char FirstChar { get; }

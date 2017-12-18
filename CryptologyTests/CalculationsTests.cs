@@ -168,47 +168,6 @@ namespace Cryptology.Tests
         }
 
         [TestMethod()]
-        public void SchnorrCheckTest()
-        {
-            int r = 32607,
-                g = 2902,
-                y = 9107,
-                p = 33107;
-
-            (int e, int s)[] input = new[] { (15776, 9856), (490, 8108), (9987, 7309), (155, 1267) };
-
-            for (int i = 0; i < input.Length; ++i)
-            {
-                Trace.WriteLine($"e = {input[i].e}, s = {input[i].s}, result = {Calculations.SchnorrCheck(g, input[i].s, y, input[i].e, p, r)}");
-            }
-        }
-
-        [TestMethod()]
-        public void AttackSchnorrTest()
-        {
-            (int p, int q, int g, int y, int key)[] input = new[]
-            {
-                (p: 48731, q: 443, g: 11444, y: 7355, key: 357)
-            };
-
-            foreach (var e in input)
-            {
-                int calculatedKey = Calculations.AttackSchnorr(e.p, e.g, e.y);
-                if (calculatedKey != e.key)
-                {
-                    Debug.WriteLine($"failed at (p: {e.p}, g: {e.g}, y: {e.y}, key: {e.key}) with calculated key {calculatedKey}.");
-                    Assert.IsFalse(true);
-                }
-            }
-        }
-
-        [TestMethod()]
-        public void computeSchnorr()
-        {
-            Debug.WriteLine(Calculations.AttackSchnorr(33107, 2902, 9107));
-        }
-
-        [TestMethod()]
         public void InvertTest()
         {
             (int x, int mod)[] input = { (50973, 54751), (29, 80), (71, 120) };
