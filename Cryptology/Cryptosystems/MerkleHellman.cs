@@ -43,6 +43,13 @@ namespace Cryptology
     */
     public class MerkleHellman
     {
+        /// <summary>
+        /// Шифрование сообщения <paramref name="s"/>.
+        /// </summary>
+        /// <param name="s">сообщение</param>
+        /// <param name="w">последовательность - часть закрытого ключа</param>
+        /// <param name="q">часть закрытого ключа</param>
+        /// <param name="r">часть закрытого ключа</param>
         public static int[] Encrypt(string s, int[] w, int q, int r)
         {
             int[] b = new int[w.Length];
@@ -56,15 +63,16 @@ namespace Cryptology
             return x;
         }
 
+        /// <summary>
+        /// Шифрование символа <paramref name="symbol"/>.
+        /// </summary>
+        /// <param name="symbol">символ</param>
+        /// <param name="b">открытый ключ</param>
+        /// <param name="w">последовательность - часть закрытого ключа</param>
+        /// <param name="q">часть закрытого ключа</param>
+        /// <param name="r">часть закрытого ключа</param>
         public static int Encrypt(char symbol, int[] b, int[] w, int q, int r)
         {
-            //SixBitRussianChar ch = new SixBitRussianChar(symbol);
-
-            //int c = 0;
-            //for (int i = 0; i < w.Length; ++i)
-            //    c += ch.Bits[i] * b[i];
-
-            //return c;
             CharToBitsConverter converter = new CharToBitsConverter('А', 6);
             byte[] bits = converter.ToBits(symbol);
 
@@ -76,7 +84,48 @@ namespace Cryptology
         }
 
         /// <summary>
-        /// Дешифровать сообщение <paramref name="x"/>.
+        /// Шифрование сообщения <paramref name="s"/> с использованием конвертера.
+        /// </summary>
+        /// <param name="s">сообщение</param>
+        /// <param name="w">последовательность - часть закрытого ключа</param>
+        /// <param name="q">часть закрытого ключа</param>
+        /// <param name="r">часть закрытого ключа</param>
+        /// <param name="converter">преобразователь символа в массив битов</param>
+        public static int[] Encrypt(string s, int[] w, int q, int r, CharToBitsConverter converter)
+        {
+            int[] b = new int[w.Length];
+            for (int i = 0; i < b.Length; ++i)
+                b[i] = Calculations.ModMultiply(r, w[i], q);
+
+            int[] x = new int[s.Length];
+            for (int i = 0; i < s.Length; ++i)
+                x[i] = Encrypt(s[i], b, w, q, r, converter);
+
+            return x;
+        }
+
+        /// <summary>
+        /// Шифрование символа <paramref name="symbol"/>.
+        /// </summary>
+        /// <param name="symbol">символ</param>
+        /// <param name="b">открытый ключ</param>
+        /// <param name="w">последовательность - часть закрытого ключа</param>
+        /// <param name="q">часть закрытого ключа</param>
+        /// <param name="r">часть закрытого ключа</param>
+        /// <param name="converter">преобразователь символа в массив битов</param>
+        public static int Encrypt(char symbol, int[] b, int[] w, int q, int r, CharToBitsConverter converter)
+        {
+            byte[] bits = converter.ToBits(symbol);
+
+            int c = 0;
+            for (int i = 0; i < w.Length; ++i)
+                c += bits[i] * b[i];
+
+            return c;
+        }
+
+        /// <summary>
+        /// Расшифровать сообщение <paramref name="x"/>.
         /// </summary>
         /// <param name="x">сообщение</param>
         /// <param name="w">последовательность - часть закрытого ключа</param>
@@ -94,7 +143,7 @@ namespace Cryptology
         }
 
         /// <summary>
-        /// Десшифровать символ <paramref name="x"/>.
+        /// Расшифровать символ <paramref name="x"/>.
         /// </summary>
         /// <param name="x">зашифрованный символ</param>
         /// <param name="w">последовательность - часть закрытого ключа</param>
@@ -115,6 +164,52 @@ namespace Cryptology
             }
 
             CharToBitsConverter converter = new CharToBitsConverter('А', 6);
+            return converter.ToChar(bits);
+        }
+
+        /// <summary>
+        /// Расшифровать сообщение <paramref name="x"/>с использованием заданного 
+        /// конвертера <paramref name="converter"/>.
+        /// </summary>
+        /// <param name="x">сообщение</param>
+        /// <param name="w">последовательность - часть закрытого ключа</param>
+        /// <param name="q">часть закрытого ключа</param>
+        /// <param name="r">часть закрытого ключа</param>
+        /// <param name="converter">преобразователь массива битов в символ</param>
+        public static string Decrypt(int[] x, int[] w, int q, int r, CharToBitsConverter converter)
+        {
+            char[] message = new char[x.Length];
+
+            int s = Calculations.InvertNotCoprimeIntegers(r, q);
+            for (int i = 0; i < x.Length; ++i)
+                message[i] = Decrypt(x[i], w, s, q, converter);
+
+            return new string(message);
+        }
+
+        /// <summary>
+        /// Расшифровать символ <paramref name="x"/> с использованием заданного 
+        /// конвертера <paramref name="converter"/>.
+        /// </summary>
+        /// <param name="x">зашифрованный символ</param>
+        /// <param name="w">последовательность - часть закрытого ключа</param>
+        /// <param name="s">обратное к r по модулю q</param>
+        /// <param name="q">часть закрытого ключа</param>
+        /// <param name="converter">преобразователь массива битов в символ</param>
+        static char Decrypt(int x, int[] w, int s, int q, CharToBitsConverter converter)
+        {
+            byte[] bits = new byte[w.Length];
+            int c = Calculations.ModMultiply(x, s, q);
+            while (c > 0)
+            {
+                int i = w.Length - 1;
+                while (i >= 0 && w[i] > c) --i;
+                if (i < 0)
+                    break;
+                c -= w[i];
+                bits[i] = 1;
+            }
+
             return converter.ToChar(bits);
         }
     }
@@ -166,17 +261,33 @@ namespace Cryptology
     {
         public char FirstChar { get; }
         public int Length { get; }
+        public int Shift { get; }
 
-        public CharToBitsConverter(char firstChar, int length)
+        /// <summary>
+        /// Создание экземпляра конвертера.
+        /// </summary>
+        /// <param name="firstChar">первый символ из числа конвертируемых</param>
+        /// <param name="length">длина битового массива</param>
+        /// <param name="shift">сдвиг относительно нулевого значения</param>
+        /// <example>
+        /// <code>CharToBitConverter('A', 5, 1)</code> будет конвертировать
+        /// символы в массив битов длиной 5, начиная с русской А, 
+        /// которая преобразуется в значение 00001.
+        /// </example>
+        public CharToBitsConverter(char firstChar, int length, int shift = 0)
         {
             FirstChar = firstChar;
             Length = length;
+            Shift = shift;
         }
 
+        /// <summary>
+        /// Преобразование <paramref name="ch"/> в массив битов.
+        /// </summary>
         public byte[] ToBits(char ch)
         {
             byte[] bits = new byte[Length];
-            var tmp = new BitArray(BitConverter.GetBytes(Char.ToUpper(ch) - FirstChar + 1));
+            var tmp = new BitArray(BitConverter.GetBytes(Char.ToUpper(ch) - FirstChar + Shift));
 
             for (int i = 0; i < Length; ++i)
                 bits[Length - i - 1] = (byte)(tmp[i] ? 1 : 0);
@@ -184,6 +295,9 @@ namespace Cryptology
             return bits;
         }
 
+        /// <summary>
+        /// Преобразование массива битов <paramref name="bits"/> в соответствующий символ.
+        /// </summary>
         public char ToChar(byte[] bits)
         {
             if (bits.Length != Length)
@@ -199,7 +313,7 @@ namespace Cryptology
                 pow *= 2;
             }
 
-            return (char)(FirstChar + delta - 1);
+            return (char)(FirstChar + delta - Shift);
         }
     }
 }

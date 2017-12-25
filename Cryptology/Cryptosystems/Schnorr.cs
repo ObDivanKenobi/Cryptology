@@ -63,6 +63,15 @@ namespace Cryptology
         }
 
         /// <summary>
+        /// Вычисление s по заданным параметрам.
+        /// </summary>
+        public static int CalculateConfirmationToken(int p, int q, int g, int r, int y, int e)
+        {
+            //Ничего умного не придумал, сам тут прокололся на кр.
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Получает справку для криптосистемы без передачи ключей.
         /// </summary>
         public static string Help()
